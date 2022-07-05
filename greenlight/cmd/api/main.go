@@ -39,7 +39,7 @@ func main() {
 	// Read the value of the port and env command-line flags into the config struct. We
 	// default to using the port number 4000 and the environment "development" if no
 	// corresponding flags are provided.
-	flag.IntVar(&cfg.port, "port", 8000, "API server port")
+	flag.IntVar(&cfg.port, "port", 4000, "API server port")
 	flag.StringVar(&cfg.env, "env", "development", "Environment (development|staging|production)")
 	flag.Parse()
 

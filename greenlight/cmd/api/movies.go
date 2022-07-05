@@ -11,7 +11,23 @@ import (
 // Add a createMovieHandler for the "POST /v1/movies" endpoint. For now we simply
 // return a plain-text placeholder response.
 func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "create a new movie")
+	var input struct {
+		Title   string   `json:"title"`
+		Year    int32    `json:"year"`
+		Runtime int32    `json:"runtime"`
+		Genres  []string `json:"genres"`
+	}
+
+	// Use the new readJSON() helper to decode the request body into the input struct.
+	// If this returns an error we send the client the error message along with a 400
+	// Bad Request status code, just like before.
+	err := app.readJSON(w, r, &input)
+	if err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	fmt.Fprintf(w, "%+v\n", input)
 }
 
 // Add a showMovieHandler for the "GET /v1/movies/:id" endpoint. For now, we retrieve
