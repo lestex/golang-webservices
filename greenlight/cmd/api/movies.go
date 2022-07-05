@@ -42,6 +42,4 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 		app.logger.Println(err)
 		http.Error(w, "The server encountered a problem and could not process your request", http.StatusInternalServerError)
 	}
-
-	fmt.Fprintf(w, "show the details of movie %d\n", id)
 }
