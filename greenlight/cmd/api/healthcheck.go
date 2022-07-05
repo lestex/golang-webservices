@@ -10,7 +10,7 @@ func (app *application) healthcheckHandler(w http.ResponseWriter, r *http.Reques
 	// string literal (enclosed with backticks) so that we can include double-quote
 	// characters in the JSON without needing to escape them? We also use the %q verb to
 	// wrap the interpolated values in double-quotes.
-	js := `{"status: available", "environment": %q, "version": %q}`
+	js := `{"status": "available", "environment": %q, "version": %q}`
 	js = fmt.Sprintf(js, app.config.env, version)
 
 	// Set the "Content-Type: application/json" header on the response. If you forget to
