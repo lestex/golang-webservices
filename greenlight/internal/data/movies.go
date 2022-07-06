@@ -41,7 +41,7 @@ type MovieModel struct {
 }
 
 // Add a placeholder method for inserting a new record in the movies table.
-func (m MovieModel) Insert(movie Movie) error {
+func (m MovieModel) Insert(movie *Movie) error {
 	return nil
 }
 
@@ -57,5 +57,22 @@ func (m MovieModel) Update(movie *Movie) error {
 
 // Add a placeholder method for deleting a specific record from the movies table.
 func (m MovieModel) Delete(id int64) error {
+	return nil
+}
+
+type MockMovieModel struct{}
+
+func (m MockMovieModel) Insert(movie *Movie) error {
+	return nil
+}
+
+func (m MockMovieModel) Get(id int64) (*Movie, error) {
+	return nil, nil
+}
+func (m MockMovieModel) Update(movie *Movie) error {
+	return nil
+}
+
+func (m MockMovieModel) Delete(id int64) error {
 	return nil
 }
