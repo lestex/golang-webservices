@@ -18,6 +18,7 @@ type Models struct {
 	// Set the Movies field to be an interface containing the methods that both the
 	// 'real' model and mock model need to support.
 	Movies interface {
+		GetAll(title string, genres []string, filters Filters) ([]*Movie, error)
 		Insert(movie *Movie) error
 		Get(id int64) (*Movie, error)
 		Update(movie *Movie) error
