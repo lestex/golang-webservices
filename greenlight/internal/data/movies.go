@@ -46,9 +46,10 @@ type MovieModel struct {
 func (m MovieModel) GetAll(title string, genres []string, filters Filters) ([]*Movie, error) {
 	// Construct the SQL query to retrieve all movie records.
 	query := `
-		SELECT id, created_at, title, year, runtime, genres, version
-		FROM movies
-		ORDER BY id`
+	SELECT id, created_at, title, year, runtime, genres, version
+	FROM movies
+	WHERE (to_tsvector('simple', title) @@ plainto_tsquery('simple', $1) OR $1 = '') AND (genres @> $2 OR $2 = '{}')
+	ORDER BY id`
 
 	// Create a context with a 3-second timeout.
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -56,7 +57,7 @@ func (m MovieModel) GetAll(title string, genres []string, filters Filters) ([]*M
 
 	// Use QueryContext() to execute the query. This returns a sql.Rows resultset
 	// containing the result.
-	rows, err := m.DB.QueryContext(ctx, query)
+	rows, err := m.DB.QueryContext(ctx, query, title, pq.Array(genres))
 	if err != nil {
 		return nil, err
 	}
@@ -72,8 +73,6 @@ func (m MovieModel) GetAll(title string, genres []string, filters Filters) ([]*M
 	for rows.Next() {
 		var movie Movie
 
-		// Scan the values from the row into the Movie struct. Again, note that we're
-		// using the pq.Array() adapter on the genres field here.
 		err := rows.Scan(
 			&movie.ID,
 			&movie.CreatedAt,
@@ -92,8 +91,6 @@ func (m MovieModel) GetAll(title string, genres []string, filters Filters) ([]*M
 		movies = append(movies, &movie)
 	}
 
-	// When the rows.Next() loop has finished, call rows.Err() to retrieve any error
-	// that was encountered during the iteration.
 	if err = rows.Err(); err != nil {
 		return nil, err
 	}
